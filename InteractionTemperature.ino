@@ -7,6 +7,7 @@
 //#include <weather_client.h>
 //#include "lasote/weather/weather_client.h"
 
+//#define COMMON_ANODE
 
 //using namespace ArduinoJson::Parser;
 //using namespace lasote;
@@ -50,7 +51,6 @@ int bPin = 9; //blue
 void setup() {
   //Initialize serial and wait for port to open:
   Serial.begin(9600);
-
   setupLightPins();
   //setupWireless();
   //delay(1000);
@@ -90,16 +90,21 @@ void setupWireless() {
 }
 
 void setColor(int red, int green, int blue) {
+  #ifdef COMMON_ANODE
+    red = 255 - red;
+    green = 255 - green;
+    blue = 255 - blue;
+  #endif
   analogWrite(rPin, red);
   analogWrite(gPin, green);
   analogWrite(bPin, blue);
+  
 }
 
 void setupLightPins() {
   pinMode(rPin, OUTPUT);
   pinMode(gPin, OUTPUT);
   pinMode(bPin, OUTPUT);
-  setColor(0, 0, 0);
 }
 
 void loop() {
@@ -107,18 +112,18 @@ void loop() {
 }
 
 void colorSwitchingStuff() {
-  Serial.println("In the loop");
+  //Serial.println("In the loop");
 
   //setColor(0, 255, 0);  // green
-  setColor(0, 0, 255); // blue?
-  /*delay(1000);
+  //setColor(255, 0, 0); // blue?
+  //delay(1000);
   setColor(255, 0, 0);  // red
   delay(1000);
   setColor(0, 255, 0);  // green
   delay(1000);
   setColor(0, 0, 255);  // blue
   delay(1000);
-  setColor(255, 255, 0);  // yellow
+  /*setColor(255, 255, 0);  // yellow
   delay(1000);
   setColor(80, 0, 80);  // purple
   delay(1000);
