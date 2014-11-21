@@ -18,7 +18,7 @@
 #include <JsonParser.h>
 #include <b64.h>
 #include <HttpClient.h>
-#include <weather_client.h>
+//#include <weather_client.h>
 //#include "lasote/weather/weather_client.h"
 
 
@@ -57,10 +57,21 @@ int _read = 0;
 
 String result = "";
 
+int rPin = 11; //red
+int gPin = 10; //green
+int bPin = 9; //blue
+
 void setup() {
   //Initialize serial and wait for port to open:
   Serial.begin(9600);
-  while (!Serial) {
+  
+  setupLightPins();
+  //setupWireless();
+  //delay(1000);
+}
+
+void setupWireless() {
+   while (!Serial) {
     ; // wait for serial port to connect. Needed for Leonardo only
   }
 
@@ -87,20 +98,47 @@ void setup() {
     // wait 10 seconds for connection:
     delay(5000);
   }
-
-
-
-
-
+ 
   printCurrentNet();
-  printWifiData();
-  //delay(1000);
+  printWifiData(); 
+}
+
+void setColor(int red, int green, int blue) {
+  analogWrite(rPin, red);
+  analogWrite(gPin, green);
+  analogWrite(bPin, blue);
+}
+
+void setupLightPins() {
+  pinMode(rPin, OUTPUT);
+  pinMode(gPin, OUTPUT);
+  pinMode(bPin, OUTPUT);
+  setColor(0, 0, 0);
 }
 
 void loop() {
-
+  colorSwitchingStuff();
 }
 
+void colorSwitchingStuff() {
+  Serial.println("In the loop");
+  
+  //setColor(0, 255, 0);  // green
+  setColor(0, 0, 255); // blue?
+  /*delay(1000);
+  setColor(255, 0, 0);  // red
+  delay(1000);
+  setColor(0, 255, 0);  // green
+  delay(1000);
+  setColor(0, 0, 255);  // blue
+  delay(1000);
+  setColor(255, 255, 0);  // yellow
+  delay(1000);  
+  setColor(80, 0, 80);  // purple
+  delay(1000);
+  setColor(0, 255, 255);  // aqua
+  delay(1000);*/
+}
 
 void httpRequest() {
   client.stop();
@@ -120,6 +158,7 @@ void httpRequest() {
     Serial.println("Connection Failed."); 
   }
 }
+
 
 void httpRequestStuff() {
   _read = 0;
@@ -179,10 +218,6 @@ void printWifiData() {
   IPAddress gateway = WiFi.gatewayIP();
   Serial.print("Gateway: ");
   Serial.println(gateway);
-}
-
-void connectClient() {
-  
 }
 
 void alternateHTTP() {
