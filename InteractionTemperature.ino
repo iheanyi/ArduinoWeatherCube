@@ -1,18 +1,4 @@
 
-/*
-
- This example connects to an unencrypted Wifi network.
- Then it prints the  MAC address of the Wifi shield,
- the IP address obtained, and other network details.
- 
- Circuit:
- * WiFi shield attached
- 
- created 13 July 2010
- by dlf (Metodo2 srl)
- modified 31 May 2012
- by Tom Igoe
- */
 #include <SPI.h>
 #include <WiFi.h>
 #include <JsonParser.h>
@@ -64,7 +50,7 @@ int bPin = 9; //blue
 void setup() {
   //Initialize serial and wait for port to open:
   Serial.begin(9600);
-  
+
   setupLightPins();
   //setupWireless();
   //delay(1000);
@@ -83,9 +69,9 @@ void setupWireless() {
   }
 
   response_buffer = new char[16000];
-  
+
   String fv = WiFi.firmwareVersion();
-  
+
   if ( fv != "1.1.0" )
     Serial.println("Please upgrade the firmware");
 
@@ -98,9 +84,9 @@ void setupWireless() {
     // wait 10 seconds for connection:
     delay(5000);
   }
- 
+
   printCurrentNet();
-  printWifiData(); 
+  printWifiData();
 }
 
 void setColor(int red, int green, int blue) {
@@ -122,7 +108,7 @@ void loop() {
 
 void colorSwitchingStuff() {
   Serial.println("In the loop");
-  
+
   //setColor(0, 255, 0);  // green
   setColor(0, 0, 255); // blue?
   /*delay(1000);
@@ -133,7 +119,7 @@ void colorSwitchingStuff() {
   setColor(0, 0, 255);  // blue
   delay(1000);
   setColor(255, 255, 0);  // yellow
-  delay(1000);  
+  delay(1000);
   setColor(80, 0, 80);  // purple
   delay(1000);
   setColor(0, 255, 255);  // aqua
@@ -153,9 +139,9 @@ void httpRequest() {
     client.println();
 
     lastConnectionTime = millis();
-  } 
+  }
   else {
-    Serial.println("Connection Failed."); 
+    Serial.println("Connection Failed.");
   }
 }
 
@@ -167,19 +153,19 @@ void httpRequestStuff() {
     char c = client.read();
     //response_buffer[_read] = c;
     result = result + c;
-    /*if(_read >= 3 && response_buffer[_read-3] == 'r' 
-       && response_buffer[_read-2] == '\n' 
-       && response_buffer[_read-1] == '\r' && response_buffer[_read] == '\n') {   
-      
+    /*if(_read >= 3 && response_buffer[_read-3] == 'r'
+       && response_buffer[_read-2] == '\n'
+       && response_buffer[_read-1] == '\r' && response_buffer[_read] == '\n') {
+
        Serial.println(_read);
      }*/
-     
+
     //Serial.println(_read);
-    
+
    Serial.print(c);
    _read++;
   }
-  
+
   //Serial.print(result);
 
   if (millis() - lastConnectionTime > postingInterval) {
@@ -223,21 +209,21 @@ void printWifiData() {
 void alternateHTTP() {
  int err = 0;
  HttpClient http(client);
- 
+
  err = http.get(server, path);
  if(err == 0) {
   Serial.println("Requested stated just fine.");
-  err = http.responseStatusCode(); 
-  
+  err = http.responseStatusCode();
+
   if (err >= 0) {
    Serial.println("Got status code: ");
    Serial.println(err);
-  
+
     err = http.skipResponseHeaders();
-   
+
    if (err >= 0) {
     int bodyLen = http.contentLength();
-   } 
+   }
   }
  }
 }
@@ -273,4 +259,4 @@ void printCurrentNet() {
   Serial.println(encryption, HEX);
 }
 
-  
+
