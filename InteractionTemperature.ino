@@ -44,10 +44,12 @@ int _read = 0;
 
 String result = "";
 
-int rPin = 11; //red
-int gPin = 10; //green
-int bPin = 9; //blue
+int rPin = 9; //red
+int gPin = 6; //green
+int bPin = 10; //blue
 
+int temperature = 50;
+boolean hasPrecipitation = true;
 void setup() {
   //Initialize serial and wait for port to open:
   Serial.begin(9600);
@@ -105,6 +107,7 @@ void setupLightPins() {
   pinMode(rPin, OUTPUT);
   pinMode(gPin, OUTPUT);
   pinMode(bPin, OUTPUT);
+  setColor(0,0,255);
 }
 
 void loop() {
@@ -112,23 +115,20 @@ void loop() {
 }
 
 void colorSwitchingStuff() {
-  //Serial.println("In the loop");
-
-  //setColor(0, 255, 0);  // green
-  //setColor(255, 0, 0); // blue?
-  //delay(1000);
-  setColor(255, 0, 0);  // red
-  delay(1000);
-  setColor(0, 255, 0);  // green
-  delay(1000);
-  setColor(0, 0, 255);  // blue
-  delay(1000);
-  /*setColor(255, 255, 0);  // yellow
-  delay(1000);
-  setColor(80, 0, 80);  // purple
-  delay(1000);
-  setColor(0, 255, 255);  // aqua
-  delay(1000);*/
+  
+  if (temperature <= 32) {
+   setColor(0, 0, 255); 
+  } else if (temperature > 32 && temperature < 75) {
+   setColor(255, 255, 0); 
+  } else {
+   setColor(255, 0, 0); 
+  }
+  
+  if(hasPrecipitation) {
+   delay(500);
+   setColor(0, 0, 0); 
+   delay(500);
+  }
 }
 
 void httpRequest() {
