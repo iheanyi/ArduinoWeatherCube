@@ -41,7 +41,7 @@ void setup() {
 void runCurl() {
   Process p;
   p.begin("curl");
-  p.addParameter("http://api.openweathermap.org/data/2.5/weather?q=South%20Bend,IN"); // Add the URL parameter to "curl"
+  p.addParameter("http://api.openweathermap.org/data/2.5/weather?q=South%20Bend,IN&units=imperial"); // Add the URL parameter to "curl"
   //p.addParameter("http://google.com");
   String weatherString = "";
   p.run();  while (p.available()>0) {
@@ -94,41 +94,16 @@ void getWeatherInfo() {
    Serial.println("Parsing failed.");
    return;
   } else {
-    //free(jsonBuffer);
+    free(jsonBuffer);
+    Serial.println("Parsing successful!");  
+    root.prettyPrintTo(Serial);
   }
   
-  Serial.println("Parsing successful!");
-  const char* weather = root["weather"];
-  
-  root.prettyPrintTo(Serial);
+
   //free(weatherString);
   //parseJSON(weatherString);
 
 }
-
-/*void parseJSON(String jsonString) {
-  char jsonBuffer[1024];
-
-  Serial.println(jsonString);
-  Serial.println("IN the parsing of the JSON.");
-  jsonString.toCharArray(jsonBuffer, 1024);
-  JsonObject root = parser.parse(jsonBuffer);
-  Serial.println(jsonBuffer);
-  if(!root.success()) {
-   Serial.println("Error parsing JSON."); 
-  }
-  Serial.println("made it.");
-  Serial.println(jsonBuffer);
-  Serial.println("Buff");
-  
-  for (JsonObjectIterator i=root.begin(); i!=root.end(); ++i) {
-    Serial.println("Parsing the iterator.");
-    Serial.println(i.key());
-    Serial.println((char*)i.value());
-  }
-  
-}*/
-
 
 void loop() {
   getWeatherInfo();
