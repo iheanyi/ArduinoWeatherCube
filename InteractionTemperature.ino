@@ -18,21 +18,22 @@
 // Initialize client library
 
 //int rPin = 9; //red
-int rPin = 3; // Red Pin for Max Temp
+int rPin = 3; // Red Pin for Max Temp. 6 on board.
 
 //int gPin = 6; //green
-//int bPin = 10; //blue
+//int bPin = 10; //blue. 
 
-int bPin = 5;
+int bPin = 5; // 9 on board.
 
-int rPin2 = 6; // Red Pin for Current Temp;
-int bPin2 = 9; // Blue Pin for Current Temp;
+int rPin2 = 6; // Red Pin for Current Temp; 14 on board
+int bPin2 = 9; // Blue Pin for Current Temp; 17 on board
 
 int rPin3 = 10; // Red Pin for Min Temp
 int bPin3 = 11; // Blue Pin for Min Temp
 
 int temperature = 100;
 boolean hasPrecipitation = false;
+
 //JsonParser<64> parser;
 void setup() {
   Bridge.begin();
@@ -44,36 +45,11 @@ void setup() {
   
   Serial.println("Testing Yun");
   //delay(1000);
-  
-  //runCurl();
-}
-
-void runCurl() {
-  Process p;
-  p.begin("curl");
-  p.addParameter("http://api.openweathermap.org/data/2.5/weather?q=South%20Bend,IN&units=imperial"); // Add the URL parameter to "curl"
-  //p.addParameter("http://google.com");
-  String weatherString = "";
-  p.run();  while (p.available()>0) {
-    char c = p.read();
-    Serial.print(c);
-    //weatherString += c;
-  }
-  
-  Serial.println(weatherString);
-  Serial.println(weatherString.length());
-  Serial.flush();
-  
-  /*char jsonBuffer[1024];
-  
-  weatherString.toCharArray(jsonBuffer, 1024);
-  Serial.println(jsonBuffer);*/
-  Serial.println("Buffer printed CURL.");
 }
 
 void getWeatherInfo() {
   HttpClient weatherClient;
-  weatherClient.get("http://api.openweathermap.org/data/2.5/weather?q=South%20Bend,IN&units=imperial&APPID=53d2069076934085f5c518c513aee867  ");
+  weatherClient.get("http://api.openweathermap.org/data/2.5/weather?q=South%20Bend,IN&units=imperial&APPID=53d2069076934085f5c518c513aee867");
   String weatherString = "";
   
   while(weatherClient.available()) {
@@ -119,22 +95,38 @@ void getWeatherInfo() {
   const char* weatherDescription = weather[0]["description"];
   Serial.println(weatherDescription);
   
-  double weatherTemperature = (double) main["temp"];
-  double maxTemperature = (double) main["temp_max"] * 1.0;
-  double minTemperature = (double) main["temp_min"] * 1.0;
+  float weatherTemperature = (float) main["temp"];
+  float maxTemperature = (float) main["temp_max"] * 1.0;
+  float minTemperature = (float) main["temp_min"] * 1.0;
 
   Serial.println(maxTemperature);
   Serial.println(weatherTemperature);
   Serial.println(minTemperature);
   
-  /*if(maxTemperature <= 40) {
+  if(maxTemperature <= 40) {
     setMaxColor(0, 255);
-  } else if(maxTempature > 40 && maxTempature < 70) {
+  } else if(maxTemperature > 40 && maxTemperature < 70) {
     setMaxColor(255, 255);
   } else {
     setMaxColor(255, 0); 
-  }*/
-
+  }
+  
+  if(weatherTemperature <= 40) {
+    setCurrentColor(0, 255);
+  } else if(weatherTemperature > 40 && weatherTemperature < 70) {
+    setCurrentColor(255, 255);
+  } else {
+    setCurrentColor(255, 0); 
+  }
+  
+  
+  if(minTemperature <= 40) {
+    setMinColor(0, 255);
+  } else if(minTemperature > 40 && minTemperature < 70) {
+    setMinColor(255, 255);
+  } else {
+    setMinColor(255, 0); 
+  }
 }
 
 void loop() {
@@ -172,10 +164,7 @@ void updateColors(double maxTemp, double currentTemp, double minTemp) {
 }
 
 void setupLightPins() {
-  pinMode(rPin, OUTPUT);
-  
-  //pinMode(gPin, OUTPUT);
-  
+  pinMode(rPin, OUTPUT);  
   pinMode(bPin, OUTPUT);
   
   pinMode(rPin2, OUTPUT);
@@ -183,11 +172,10 @@ void setupLightPins() {
   
   pinMode(rPin3, OUTPUT);
   pinMode(bPin3, OUTPUT);
-  digitalWrite(rPin3, LOW);
-  //setColor(255,0,255);
+
   
   setMaxColor(255, 0);
-  setCurrentColor(255,0);
+  setCurrentColor(255, 0);
   setMinColor(255,0);
 }
 
